@@ -1,11 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const path = require("path");
 
 const PORT = process.env.PORT ||3001;
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
+
+
+//This allows us to serve files out of the client/build folder
+app.use(express.static("client/build"));
 
 app.get("/", (req, res) => {
     res.send("hi");
@@ -20,6 +25,11 @@ app.post("/api/test", (req, res) => {
     console.log(req.body);
     req.body.received = true;
     res.json(req.body);
+});
+
+// This is a catch all if no other routes are matched
+app.use(function(req, res) {
+    res.sendFile(path.join(_dirname, "client/build/index.html"));
 });
 
 app.listen(PORT, function() {
