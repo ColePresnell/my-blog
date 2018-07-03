@@ -4,23 +4,36 @@ import './App.css';
 import axios from "axios";
 
 class App extends Component {
-  getGetRequest(){
-    axios.get("/api/test").then(res => {
-      console.log("get test");
-    });
+  state= {
+    title: "",
+    body: ""
   }
-  getPostRequest(){
-    axios.post("/api/test", {test: true}).then(res =>{
-      console.log("post test");
-    });
+  
+  handleInputChange = event => {
+    const {name, value} = event.target;
+    console.log(name);
+    this.setState({ [name]: value});
   }
-
+saveBlog = event =>{
+  event.preventDefualt();
+  console.log(this.state.title);
+  console.log(this.state.body);
+}
+postBlog = event => {
+  event.preventDefualt();
+  const { title, body} = this.state;
+  axios.post("/api/blog", {title, body}).then(res => {
+    console.log(res);
+    this.setState({ title: "", body: ""});
+  })
+}
   render() {
     return (
       <div>
       <form>
-        <input id="title" />
-        <textarea id="post"></textarea>
+        <input name="title" onChange={this.handleInputChange} value={this.state.title} />
+        <textarea name="body" onChange={this.handleInputChange} value={this.state.body}></textarea>
+        <button onClick={this.postBlog}>Submit</button>
           </form>
       </div>
     );
